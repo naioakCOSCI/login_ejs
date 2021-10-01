@@ -149,6 +149,39 @@ app.post("/add", (req, res) => {
   //   res.end();
 });
 
+app.get("/edit/:id", (req, res) => {
+  const edit_postID = req.params.id;
+
+  connection.query(
+    "SELECT * FROM accounts WHERE id=?",
+    [edit_postID],
+    (err, results) => {
+      if (results) {
+        res.render("edit", {
+          post: results[0],
+        });
+      }
+    }
+  );
+});
+
+app.post("/edit/:id", (req, res) => {
+  const update_username = req.body.username;
+  const update_password = req.body.password;
+  const update_email = req.body.email;
+  const id = req.params.id;
+  connection.query(
+    "UPDATE accounts SET username = ?,password = ? ,email = ? WHERE id = ?",
+    [update_username, update_password, update_email, id],
+    (err, results) => {
+      if (results.changedRows === 1) {
+        console.log("Post Updated");
+      }
+      return res.redirect("/webboard");
+    }
+  );
+});
+
 //running port 9000
 app.listen(9000);
 console.log("running on port 9000...");
