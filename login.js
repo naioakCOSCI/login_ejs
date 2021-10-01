@@ -126,6 +126,28 @@ app.get("/webboard", (req, res) => {
       // res.end();
 });
 
+app.get("/add", (req, res) => {
+  res.render("add.ejs");
+});
+
+app.post("/add", (req, res) => {
+  const username = req.body.username;
+  const password = req.body.password;
+  const email = req.body.email;
+  const post = {
+    username: username,
+    password: password,
+    email: email
+  };
+  if (req.session.loggedin)
+    connection.query("INSERT INTO accounts SET ?", post, (err) => {
+      console.log("Data Inserted");
+      return res.redirect("/webboard");
+    });
+  else res.send("You must to login First!!!");
+  console.log("You must to login First!!!");
+  //   res.end();
+});
 
 //running port 9000
 app.listen(9000);
